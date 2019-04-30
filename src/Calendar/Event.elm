@@ -1,15 +1,15 @@
-module Calendar.Event exposing (..)
+module Calendar.Event exposing (EventRange(..), cellWidth, eventSegment, eventStyling, maybeViewDayEvent, maybeViewMonthEvent, offsetLength, offsetPercentage, rangeDescription, rowSegment, styleDayEvent, styleRowSegment, viewMonthEvent)
 
+import Calendar.Msg exposing (Msg(..), TimeSpan(..))
+import Config exposing (ViewConfig)
 import Date exposing (Date)
 import Date.Extra
+import Helpers
 import Html exposing (..)
 import Html.Attributes exposing (class, classList, style)
 import Html.Events exposing (..)
-import Calendar.Msg exposing (Msg(..), TimeSpan(..))
-import Config exposing (ViewConfig)
 import Json.Decode as Json
 import Mouse
-import Helpers
 
 
 type EventRange
@@ -47,16 +47,20 @@ rangeDescription start end interval date =
             Date.Extra.diff Date.Extra.Millisecond end endInterval
                 |> (>) 0
     in
-        if startsThisInterval && endsThisInterval then
-            StartsAndEnds
-        else if startsBeforeInterval && endsAfterInterval then
-            ContinuesAfterAndPrior
-        else if startsThisInterval && endsAfterInterval then
-            ContinuesAfter
-        else if endsThisInterval && startsBeforeInterval then
-            ContinuesPrior
-        else
-            ExistsOutside
+    if startsThisInterval && endsThisInterval then
+        StartsAndEnds
+
+    else if startsBeforeInterval && endsAfterInterval then
+        ContinuesAfterAndPrior
+
+    else if startsThisInterval && endsAfterInterval then
+        ContinuesAfter
+
+    else if endsThisInterval && startsBeforeInterval then
+        ContinuesPrior
+
+    else
+        ExistsOutside
 
 
 eventStyling :
@@ -105,7 +109,7 @@ eventStyling config event eventRange timeSpan customClasses =
                 Agenda ->
                     style []
     in
-        [ classList (( classes, True ) :: customClasses), styles ]
+    [ classList (( classes, True ) :: customClasses), styles ]
 
 
 maybeViewMonthEvent : ViewConfig event -> event -> Maybe String -> EventRange -> Maybe (Html Msg)
@@ -133,10 +137,10 @@ viewMonthEvent config event selectedId eventRange =
                     Date.Extra.diff Date.Extra.Day eventStart eventEnd + 1
 
                 ContinuesAfter ->
-                    7 - (Date.Extra.weekdayNumber eventStart) + 1
+                    7 - Date.Extra.weekdayNumber eventStart + 1
 
                 ContinuesPrior ->
-                    7 - (Date.Extra.weekdayNumber eventEnd) + 1
+                    7 - Date.Extra.weekdayNumber eventEnd + 1
 
                 ContinuesAfterAndPrior ->
                     7
@@ -152,43 +156,44 @@ viewMonthEvent config event selectedId eventRange =
             )
                 ++ "%"
     in
-        if offsetLength eventStart > 0 then
-            div [ class "elm-calendar--row" ]
-                [ rowSegment (offsetPercentage eventStart) []
-                , rowSegment (eventWidthPercentage eventRange) [ eventSegment config event selectedId eventRange Month ]
-                ]
-        else
-            div [ class "elm-calendar--row" ]
-                [ rowSegment (eventWidthPercentage eventRange) [ eventSegment config event selectedId eventRange Month ] ]
+    if offsetLength eventStart > 0 then
+        div [ class "elm-calendar--row" ]
+            [ rowSegment (offsetPercentage eventStart) []
+            , rowSegment (eventWidthPercentage eventRange) [ eventSegment config event selectedId eventRange Month ]
+            ]
+
+    else
+        div [ class "elm-calendar--row" ]
+            [ rowSegment (eventWidthPercentage eventRange) [ eventSegment config event selectedId eventRange Month ] ]
 
 
 (=>) : a -> b -> ( a, b )
 (=>) =
-    (,)
+    \a b -> ( a, b )
 
 
 styleDayEvent : Date -> Date -> Html.Attribute msg
 styleDayEvent start end =
     let
         startPercent =
-            100 * (Date.Extra.fractionalDay start)
+            100 * Date.Extra.fractionalDay start
 
         endPercent =
-            100 * (Date.Extra.fractionalDay end)
+            100 * Date.Extra.fractionalDay end
 
         height =
             (toString <| endPercent - startPercent) ++ "%"
 
         startPercentage =
-            (toString startPercent) ++ "%"
+            toString startPercent ++ "%"
     in
-        style
-            [ "top" => startPercentage
-            , "height" => height
-            , "left" => "0%"
-            , "width" => "90%"
-            , "position" => "absolute"
-            ]
+    style
+        [ "top" => startPercentage
+        , "height" => height
+        , "left" => "0%"
+        , "width" => "90%"
+        , "position" => "absolute"
+        ]
 
 
 maybeViewDayEvent : ViewConfig event -> event -> Maybe String -> EventRange -> Maybe (Html Msg)
@@ -214,15 +219,15 @@ eventSegment config event selectedId eventRange timeSpan =
         { nodeName, classes, children } =
             config.event event isSelected
     in
-        node nodeName
-            ([ onClick <| EventClick eventId
-             , onMouseEnter <| EventMouseEnter eventId
-             , onMouseLeave <| EventMouseLeave eventId
-             , on "mousedown" <| Json.map (EventDragStart eventId) Mouse.position
-             ]
-                ++ eventStyling config event eventRange timeSpan classes
-            )
-            children
+    node nodeName
+        ([ onClick <| EventClick eventId
+         , onMouseEnter <| EventMouseEnter eventId
+         , onMouseLeave <| EventMouseLeave eventId
+         , on "mousedown" <| Json.map (EventDragStart eventId) Mouse.position
+         ]
+            ++ eventStyling config event eventRange timeSpan classes
+        )
+        children
 
 
 cellWidth : Float
@@ -232,8 +237,7 @@ cellWidth =
 
 offsetLength : Date -> Float
 offsetLength date =
-    (Date.Extra.weekdayNumber date)
-        % 7
+    modBy 7 (Date.Extra.weekdayNumber date)
         |> toFloat
         |> (*) cellWidth
 

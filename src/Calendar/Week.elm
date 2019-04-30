@@ -1,12 +1,12 @@
-module Calendar.Week exposing (..)
+module Calendar.Week exposing (view, viewDates, viewWeekContent, viewWeekDay, viewWeekHeader)
 
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Date exposing (Date)
-import Calendar.Day exposing (viewTimeGutter, viewTimeGutterHeader, viewDate, viewDaySlotGroup, viewAllDayCell, viewDayEvents)
+import Calendar.Day exposing (viewAllDayCell, viewDate, viewDayEvents, viewDaySlotGroup, viewTimeGutter, viewTimeGutterHeader)
 import Calendar.Msg exposing (Msg)
 import Config exposing (ViewConfig)
+import Date exposing (Date)
 import Helpers
+import Html exposing (..)
+import Html.Attributes exposing (..)
 
 
 viewWeekContent :
@@ -24,8 +24,8 @@ viewWeekContent config events selectedId viewing days =
         weekDays =
             List.map (viewWeekDay config events selectedId) days
     in
-        div [ class "elm-calendar--week-content" ]
-            (timeGutter :: weekDays)
+    div [ class "elm-calendar--week-content" ]
+        (timeGutter :: weekDays)
 
 
 viewWeekDay : ViewConfig event -> List event -> Maybe String -> Date -> Html Msg
@@ -38,8 +38,8 @@ viewWeekDay config events selectedId day =
         dayEvents =
             viewDayEvents config events selectedId day
     in
-        div [ class "elm-calendar--day" ]
-            (viewDaySlots ++ dayEvents)
+    div [ class "elm-calendar--day" ]
+        (viewDaySlots ++ dayEvents)
 
 
 view : ViewConfig event -> List event -> Maybe String -> Date -> Html Msg
@@ -48,10 +48,10 @@ view config events selectedId viewing =
         weekRange =
             Helpers.dayRangeOfWeek viewing
     in
-        div [ class "elm-calendar--week" ]
-            [ viewWeekHeader weekRange
-            , viewWeekContent config events selectedId viewing weekRange
-            ]
+    div [ class "elm-calendar--week" ]
+        [ viewWeekHeader weekRange
+        , viewWeekContent config events selectedId viewing weekRange
+        ]
 
 
 viewWeekHeader : List Date -> Html Msg

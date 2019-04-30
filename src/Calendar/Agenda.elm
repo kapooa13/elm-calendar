@@ -1,11 +1,11 @@
-module Calendar.Agenda exposing (..)
+module Calendar.Agenda exposing (EventGroup, eventsGroupedByDate, view, viewAgendaHeader, viewAgendaRow, viewAgendaRowWithDate, viewTimeAndEvent)
 
+import Config exposing (ViewConfig)
 import Date exposing (Date)
 import Date.Extra
+import Helpers
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Helpers
-import Config exposing (ViewConfig)
 
 
 type alias EventGroup event =
@@ -33,18 +33,19 @@ eventsGroupedByDate config events =
                     eventStart
                         |> Date.Extra.isBetween eventGroup.date (Date.Extra.add Date.Extra.Day 1 eventGroup.date)
             in
-                case eventGroups of
-                    [] ->
-                        [ initEventGroup event ]
+            case eventGroups of
+                [] ->
+                    [ initEventGroup event ]
 
-                    eventGroup :: restOfEventGroups ->
-                        if isEventPartOfGroup eventGroup then
-                            { eventGroup | events = event :: eventGroup.events } :: restOfEventGroups
-                        else
-                            initEventGroup event :: eventGroups
+                eventGroup :: restOfEventGroups ->
+                    if isEventPartOfGroup eventGroup then
+                        { eventGroup | events = event :: eventGroup.events } :: restOfEventGroups
+
+                    else
+                        initEventGroup event :: eventGroups
     in
-        List.sortBy (Date.toTime << config.start) events
-            |> List.foldr buildEventGroups []
+    List.sortBy (Date.toTime << config.start) events
+        |> List.foldr buildEventGroups []
 
 
 view : ViewConfig event -> List event -> Date -> Html msg
@@ -66,15 +67,15 @@ view config events date =
                     []
 
                 firstEvent :: restOfEvents ->
-                    viewAgendaRowWithDate config eventGroup firstEvent :: (List.map (viewAgendaRow config) restOfEvents)
+                    viewAgendaRowWithDate config eventGroup firstEvent :: List.map (viewAgendaRow config) restOfEvents
     in
-        table [ class "elm-calendar--agenda" ]
-            [ viewAgendaHeader
-            , tbody [ class "elm-calendar--agenda-tbody" ]
-                (List.map getAgendaRowView filteredEventsByMonth
-                    |> List.concat
-                )
-            ]
+    table [ class "elm-calendar--agenda" ]
+        [ viewAgendaHeader
+        , tbody [ class "elm-calendar--agenda-tbody" ]
+            (List.map getAgendaRowView filteredEventsByMonth
+                |> List.concat
+            )
+        ]
 
 
 viewAgendaHeader : Html msg
@@ -97,8 +98,8 @@ viewAgendaRowWithDate config eventGroup event =
         timeCell =
             td [ class "elm-calendar--agenda-date-cell", rowspan (List.length eventGroup.events) ] [ text <| dateString ]
     in
-        tr [ class "elm-calendar--agenda-day" ]
-            (timeCell :: viewTimeAndEvent config event)
+    tr [ class "elm-calendar--agenda-day" ]
+        (timeCell :: viewTimeAndEvent config event)
 
 
 viewAgendaRow : ViewConfig event -> event -> Html msg
@@ -119,6 +120,6 @@ viewTimeAndEvent config event =
         timeRange =
             startTime ++ " - " ++ endTime
     in
-        [ td [ class "elm-calendar--agenda-cell" ] [ text timeRange ]
-        , td [ class "elm-calendar--agenda-cell" ] [ text <| config.title event ]
-        ]
+    [ td [ class "elm-calendar--agenda-cell" ] [ text timeRange ]
+    , td [ class "elm-calendar--agenda-cell" ] [ text <| config.title event ]
+    ]

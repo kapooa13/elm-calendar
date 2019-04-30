@@ -1,4 +1,4 @@
-module Helpers exposing (..)
+module Helpers exposing (bumpMidnightBoundary, dayRangeOfWeek, hourString, hours, weekRangesFromMonth)
 
 import Date exposing (Date)
 import Date.Extra
@@ -14,6 +14,7 @@ bumpMidnightBoundary : Date -> Date
 bumpMidnightBoundary date =
     if Date.Extra.fractionalDay date == 0 then
         Date.Extra.add Date.Extra.Millisecond 1 date
+
     else
         date
 
@@ -30,7 +31,7 @@ hours date =
         lastHour =
             Date.Extra.ceiling Date.Extra.Day day
     in
-        Date.Extra.range Date.Extra.Hour 1 midnight lastHour
+    Date.Extra.range Date.Extra.Hour 1 midnight lastHour
 
 
 weekRangesFromMonth : Int -> Date.Month -> List (List Date)
@@ -42,11 +43,11 @@ weekRangesFromMonth year month =
         firstOfNextMonth =
             Date.Extra.add Date.Extra.Month 1 firstOfMonth
     in
-        Date.Extra.range Date.Extra.Day
-            1
-            (Date.Extra.floor Date.Extra.Sunday firstOfMonth)
-            (Date.Extra.ceiling Date.Extra.Sunday firstOfNextMonth)
-            |> List.Extra.groupsOf 7
+    Date.Extra.range Date.Extra.Day
+        1
+        (Date.Extra.floor Date.Extra.Sunday firstOfMonth)
+        (Date.Extra.ceiling Date.Extra.Sunday firstOfNextMonth)
+        |> List.Extra.groupsOf 7
 
 
 dayRangeOfWeek : Date -> List Date

@@ -1,9 +1,9 @@
-module Main exposing (..)
+module Main exposing (Event, Model, Msg(..), eventConfig, main, model, timeSlotConfig, update, view, viewConfig)
 
-import Html exposing (..)
 import Calendar
 import Date exposing (Date)
 import Fixtures
+import Html exposing (..)
 
 
 main =
@@ -47,12 +47,12 @@ update msg model =
                 newModel =
                     { model | calendarState = updatedCalendar }
             in
-                case maybeMsg of
-                    Nothing ->
-                        newModel
+            case maybeMsg of
+                Nothing ->
+                    newModel
 
-                    Just updateMsg ->
-                        update updateMsg newModel
+                Just updateMsg ->
+                    update updateMsg newModel
 
         SelectDate date ->
             model

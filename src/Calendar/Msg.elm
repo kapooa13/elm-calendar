@@ -1,4 +1,4 @@
-module Calendar.Msg exposing (..)
+module Calendar.Msg exposing (Msg(..), TimeSpan(..))
 
 import Date exposing (Date)
 import Mouse

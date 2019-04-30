@@ -1,16 +1,16 @@
-module Calendar.Internal exposing (..)
+module Calendar.Internal exposing (Drag, DragKind(..), State, changeTimeSpan, getNewDateBasedOnPosition, getTimeDiffForPosition, init, page, subscriptions, update, view, viewPagination, viewTimeSpanSelection, viewTitle, viewToolbar)
 
-import Html exposing (..)
-import Html.Attributes exposing (class)
-import Html.Events exposing (..)
-import Date exposing (Date)
-import Date.Extra
-import Config exposing (ViewConfig, EventConfig, TimeSlotConfig)
 import Calendar.Agenda as Agenda
 import Calendar.Day as Day
 import Calendar.Month as Month
-import Calendar.Week as Week
 import Calendar.Msg exposing (Msg(..), TimeSpan(..))
+import Calendar.Week as Week
+import Config exposing (EventConfig, TimeSlotConfig, ViewConfig)
+import Date exposing (Date)
+import Date.Extra
+import Html exposing (..)
+import Html.Attributes exposing (class)
+import Html.Events exposing (..)
 import Mouse
 import Time exposing (Time)
 
@@ -87,7 +87,7 @@ update eventConfig timeSlotConfig msg state =
             )
 
         TimeSlotDragging date xy ->
-            ( { state | dragState = (Maybe.map (\{ start, kind } -> Drag start xy kind) state.dragState) }
+            ( { state | dragState = Maybe.map (\{ start, kind } -> Drag start xy kind) state.dragState }
             , timeSlotConfig.onDragging (getNewDateBasedOnPosition date xy state) xy
             )
 
@@ -117,7 +117,7 @@ update eventConfig timeSlotConfig msg state =
             )
 
         EventDragging eventId xy ->
-            ( { state | dragState = (Maybe.map (\{ start, kind } -> Drag start xy kind) state.dragState) }
+            ( { state | dragState = Maybe.map (\{ start, kind } -> Drag start xy kind) state.dragState }
             , eventConfig.onDragging eventId (getTimeDiffForPosition xy state)
             )
 
@@ -134,7 +134,7 @@ getNewDateBasedOnPosition date xy state =
             getTimeDiffForPosition xy state
                 |> floor
     in
-        Date.Extra.add Date.Extra.Millisecond timeDiff date
+    Date.Extra.add Date.Extra.Millisecond timeDiff date
 
 
 getTimeDiffForPosition : Mouse.Position -> State -> Time
@@ -147,17 +147,17 @@ getTimeDiffForPosition xy state =
                 |> (*) Time.minute
                 |> (*) 30
     in
-        case state.timeSpan of
-            Month ->
-                0
+    case state.timeSpan of
+        Month ->
+            0
 
-            _ ->
-                case state.dragState of
-                    Just drag ->
-                        timeDiff drag
+        _ ->
+            case state.dragState of
+                Just drag ->
+                    timeDiff drag
 
-                    Nothing ->
-                        0
+                Nothing ->
+                    0
 
 
 page : Int -> State -> State
@@ -166,15 +166,15 @@ page step state =
         { timeSpan, viewing } =
             state
     in
-        case timeSpan of
-            Week ->
-                { state | viewing = Date.Extra.add Date.Extra.Week step viewing }
+    case timeSpan of
+        Week ->
+            { state | viewing = Date.Extra.add Date.Extra.Week step viewing }
 
-            Day ->
-                { state | viewing = Date.Extra.add Date.Extra.Day step viewing }
+        Day ->
+            { state | viewing = Date.Extra.add Date.Extra.Day step viewing }
 
-            _ ->
-                { state | viewing = Date.Extra.add Date.Extra.Month step viewing }
+        _ ->
+            { state | viewing = Date.Extra.add Date.Extra.Month step viewing }
 
 
 changeTimeSpan : TimeSpan -> State -> State
@@ -199,15 +199,15 @@ view config events { viewing, timeSpan, selected } =
                 Agenda ->
                     Agenda.view config events viewing
     in
-        div
-            [ class "elm-calendar--container"
-            , Html.Attributes.draggable "false"
+    div
+        [ class "elm-calendar--container"
+        , Html.Attributes.draggable "false"
+        ]
+        [ div [ class "elm-calendar--calendar" ]
+            [ viewToolbar viewing timeSpan
+            , calendarView
             ]
-            [ div [ class "elm-calendar--calendar" ]
-                [ viewToolbar viewing timeSpan
-                , calendarView
-                ]
-            ]
+        ]
 
 
 viewToolbar : Date -> TimeSpan -> Html Msg

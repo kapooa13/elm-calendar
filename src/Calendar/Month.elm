@@ -1,14 +1,14 @@
-module Calendar.Month exposing (..)
+module Calendar.Month exposing (view, viewDay, viewMonthHeader, viewMonthRow, viewMonthRowBackground, viewMonthRowContent, viewWeekEvent)
 
-import Html exposing (..)
-import Html.Attributes exposing (..)
+import Calendar.Event as Event exposing (rangeDescription)
+import Calendar.Msg exposing (Msg)
+import Config exposing (ViewConfig)
 import Date exposing (Date)
 import Date.Extra
 import Date.Extra.Facts
-import Config exposing (ViewConfig)
 import Helpers
-import Calendar.Msg exposing (Msg)
-import Calendar.Event as Event exposing (rangeDescription)
+import Html exposing (..)
+import Html.Attributes exposing (..)
 
 
 view : ViewConfig event -> List event -> Maybe String -> Date -> Html Msg
@@ -17,11 +17,11 @@ view config events selectedId viewing =
         weeks =
             Helpers.weekRangesFromMonth (Date.year viewing) (Date.month viewing)
     in
-        div [ class "elm-calendar--column" ]
-            [ viewMonthHeader
-            , div [ class "elm-calendar--month" ]
-                (List.map (viewMonthRow config events selectedId) weeks)
-            ]
+    div [ class "elm-calendar--column" ]
+        [ viewMonthHeader
+        , div [ class "elm-calendar--month" ]
+            (List.map (viewMonthRow config events selectedId) weeks)
+        ]
 
 
 viewMonthHeader : Html Msg
@@ -30,7 +30,7 @@ viewMonthHeader =
         viewDayOfWeek int =
             viewDay <| Date.Extra.Facts.dayOfWeekFromWeekdayNumber int
     in
-        div [ class "elm-calendar--row" ] (List.map viewDayOfWeek (List.range 0 6))
+    div [ class "elm-calendar--row" ] (List.map viewDayOfWeek (List.range 0 6))
 
 
 viewDay : Date.Day -> Html Msg
@@ -70,8 +70,8 @@ viewMonthRowContent config events selectedId week =
             List.filterMap (viewWeekEvent config week selectedId) events
                 |> List.take 3
     in
-        div [ class "elm-calendar--month-week" ]
-            (datesRow :: eventRows)
+    div [ class "elm-calendar--month-week" ]
+        (datesRow :: eventRows)
 
 
 viewWeekEvent : ViewConfig event -> List Date -> Maybe String -> event -> Maybe (Html Msg)
@@ -80,5 +80,5 @@ viewWeekEvent config week selectedId event =
         eventRange sunday =
             rangeDescription (config.start event) (config.end event) Date.Extra.Sunday sunday
     in
-        Maybe.map eventRange (List.head week)
-            |> Maybe.andThen (Event.maybeViewMonthEvent config event selectedId)
+    Maybe.map eventRange (List.head week)
+        |> Maybe.andThen (Event.maybeViewMonthEvent config event selectedId)

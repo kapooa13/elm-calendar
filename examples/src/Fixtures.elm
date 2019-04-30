@@ -1,4 +1,4 @@
-module Fixtures exposing (..)
+module Fixtures exposing (dayAfter, dayPrior, end, eventFour, eventGroups, eventOne, eventThree, eventTwo, events, fullWeekStartSunday, hoursInADay, octoberDatesByWeek, start, viewing, weekAfter, weekPrior)
 
 import Date exposing (..)
 import Date.Extra as Date exposing (..)

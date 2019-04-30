@@ -1,46 +1,35 @@
-module Calendar
-    exposing
-        ( init
-        , State
-        , TimeSpan(..)
-        , Msg
-        , update
-        , page
-        , changeTimeSpan
-        , view
-        , viewConfig
-        , ViewConfig
-        , eventConfig
-        , EventView
-        , eventView
-        , EventConfig
-        , timeSlotConfig
-        , TimeSlotConfig
-        , subscriptions
-        )
+module Calendar exposing
+    ( init, State, TimeSpan(..)
+    , Msg, update, page, changeTimeSpan, eventConfig, EventConfig, timeSlotConfig, TimeSlotConfig, subscriptions
+    , view, viewConfig, ViewConfig, EventView, eventView
+    )
 
-{-|
+{-| Hey it's a calendar!
 
-Hey it's a calendar!
 
 # Definition
+
 @docs init, State, TimeSpan
 
+
 # Update
+
 @docs Msg, update, page, changeTimeSpan, eventConfig, EventConfig, timeSlotConfig, TimeSlotConfig, subscriptions
 
+
 # View
+
 @docs view, viewConfig, ViewConfig, EventView, eventView
+
 -}
 
-import Html exposing (..)
-import Date exposing (Date)
-import Config
 import Calendar.Internal as Internal
-import Calendar.Msg
 import Calendar.Msg as InternalMsg
-import Time exposing (Time)
+import Config
+import Date exposing (Date)
+import Html exposing (..)
 import Mouse
+import Time exposing (Time)
 
 
 {-| Create the calendar
@@ -79,7 +68,7 @@ update (EventConfig eventConfig) (TimeSlotConfig timeSlotConfig) (Internal msg) 
         ( updatedCalendar, calendarMsg ) =
             Internal.update eventConfig timeSlotConfig msg state
     in
-        ( State updatedCalendar, calendarMsg )
+    ( State updatedCalendar, calendarMsg )
 
 
 {-| Page by some interval based on the current view: Month, Week, Day
@@ -163,13 +152,13 @@ viewConfig { toId, title, start, end, event } =
         eventView id selected =
             extractEventView <| event id selected
     in
-        ViewConfig
-            { toId = toId
-            , title = title
-            , start = start
-            , end = end
-            , event = eventView
-            }
+    ViewConfig
+        { toId = toId
+        , title = title
+        , start = start
+        , end = end
+        , event = eventView
+        }
 
 
 {-| configure time slot interactions

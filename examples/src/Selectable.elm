@@ -1,17 +1,17 @@
-module Main exposing (..)
+module Main exposing (CalendarMsg(..), Event, EventPreview, Model, Msg(..), addEventPreviewToEvents, changeEventPreviewTitle, createEventPreview, eventConfig, extendEventPreview, flippedComparison, init, main, newEventId, pureUpdate, px, removeEventPreview, selectEvent, showCreateEventDialog, subscriptions, timeSlotConfig, toggleEventPreviewDialog, update, updateCalendar, view, viewConfig, viewCreateEvent, viewCreateEventDialog)
 
-import Html exposing (..)
-import Html.Attributes exposing (class, classList, style, value)
-import Html.Events exposing (onInput, onClick)
 import Calendar
 import Date exposing (Date)
 import Date.Extra
-import Fixtures
 import Dict exposing (Dict)
-import Time exposing (Time)
+import Fixtures
+import Html exposing (..)
+import Html.Attributes exposing (class, classList, style, value)
+import Html.Events exposing (onClick, onInput)
+import Keyboard
 import Mouse
 import String
-import Keyboard
+import Time exposing (Time)
 
 
 main =
@@ -111,12 +111,12 @@ pureUpdate msg model =
                 newModel =
                     { model | calendarState = updatedCalendar }
             in
-                case maybeMsg of
-                    Nothing ->
-                        newModel
+            case maybeMsg of
+                Nothing ->
+                    newModel
 
-                    Just updateMsg ->
-                        updateCalendar updateMsg newModel
+                Just updateMsg ->
+                    updateCalendar updateMsg newModel
 
         CreateEventTitle title ->
             model
@@ -181,12 +181,12 @@ updateCalendar msg model =
                 updateEvents event =
                     Dict.insert eventId (extendEvent event) model.events
             in
-                case maybeEvent of
-                    Nothing ->
-                        model
+            case maybeEvent of
+                Nothing ->
+                    model
 
-                    Just event ->
-                        { model | events = updateEvents event }
+                Just event ->
+                    { model | events = updateEvents event }
 
 
 createEventPreview : Date -> Mouse.Position -> Int -> Model -> Model
@@ -201,7 +201,7 @@ createEventPreview date xy minutes model =
             , showDialog = False
             }
     in
-        { model | eventPreview = Just eventPreview }
+    { model | eventPreview = Just eventPreview }
 
 
 selectEvent : String -> Model -> Model
@@ -228,7 +228,7 @@ changeEventPreviewTitle title model =
         changePreviewTitle preview =
             { preview | event = changeEventTitle preview.event }
     in
-        { model | eventPreview = Maybe.map changePreviewTitle model.eventPreview }
+    { model | eventPreview = Maybe.map changePreviewTitle model.eventPreview }
 
 
 extendEventPreview : Date -> Mouse.Position -> Model -> Model
@@ -237,7 +237,7 @@ extendEventPreview date xy model =
         extend ({ event, position } as eventPreview) =
             { eventPreview | event = { event | end = Debug.log "finalEnd" date } }
     in
-        { model | eventPreview = Maybe.map extend model.eventPreview }
+    { model | eventPreview = Maybe.map extend model.eventPreview }
 
 
 addEventPreviewToEvents : Model -> Model
@@ -248,6 +248,7 @@ addEventPreviewToEvents model =
                 | title =
                     if event.title == "" then
                         "(No Title)"
+
                     else
                         event.title
             }
@@ -255,12 +256,12 @@ addEventPreviewToEvents model =
         addToEvents event =
             Dict.insert event.id (Debug.log "newEvent" (defaultEmptyTitle event)) model.events
     in
-        { model
-            | events =
-                Maybe.map (addToEvents << .event) model.eventPreview
-                    |> Maybe.withDefault model.events
-            , curEventId = (newEventId model.curEventId)
-        }
+    { model
+        | events =
+            Maybe.map (addToEvents << .event) model.eventPreview
+                |> Maybe.withDefault model.events
+        , curEventId = newEventId model.curEventId
+    }
 
 
 removeEventPreview : Model -> Model
@@ -282,20 +283,20 @@ view model =
         events =
             Dict.values model.events
     in
-        div []
-            [ case model.eventPreview of
-                Just preview ->
-                    viewCreateEvent preview
+    div []
+        [ case model.eventPreview of
+            Just preview ->
+                viewCreateEvent preview
 
-                Nothing ->
-                    text ""
-            , Html.map SetCalendarState (Calendar.view viewConfig events model.calendarState)
-            ]
+            Nothing ->
+                text ""
+        , Html.map SetCalendarState (Calendar.view viewConfig events model.calendarState)
+        ]
 
 
 (=>) : a -> b -> ( a, b )
 (=>) =
-    (,)
+    \a b -> ( a, b )
 
 
 px : String -> String
@@ -315,22 +316,21 @@ viewCreateEvent ({ event, position, showDialog } as preview) =
                 |> (*) 20
                 |> toString
     in
-        div
-            [ class "event-preview"
-            , style
-                [ "position" => "absolute"
-                , "top" => px (toString position.y)
-                , "left" => px (toString position.x)
-                , "height" => px height
-                , "z-index" => "2"
-                ]
-            ]
-            [ if showDialog then
-                viewCreateEventDialog preview
-              else
-                text ""
-            , text "New Event"
-            ]
+    div
+        [ class "event-preview"
+        , (\( a, b ) -> style a b) ("position" => "absolute")
+        , (\( a, b ) -> style a b) ("top" => px (toString position.y))
+        , (\( a, b ) -> style a b) ("left" => px (toString position.x))
+        , (\( a, b ) -> style a b) ("height" => px height)
+        , (\( a, b ) -> style a b) ("z-index" => "2")
+        ]
+        [ if showDialog then
+            viewCreateEventDialog preview
+
+          else
+            text ""
+        , text "New Event"
+        ]
 
 
 viewCreateEventDialog : EventPreview -> Html Msg

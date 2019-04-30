@@ -1,10 +1,10 @@
-module Config exposing (..)
+module Config exposing (EventConfig, EventView, TimeSlotConfig, ViewConfig)
 
-import Date exposing (Date)
-import Time exposing (Time)
-import Mouse
-import Html exposing (Html, Attribute)
 import Calendar.Msg as InternalMsg
+import Date exposing (Date)
+import Html exposing (Attribute, Html)
+import Mouse
+import Time exposing (Time)
 
 
 type alias EventView =

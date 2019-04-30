@@ -1,16 +1,16 @@
-module Calendar.Day exposing (..)
+module Calendar.Day exposing (view, viewAllDayCell, viewDate, viewDayEvent, viewDayEvents, viewDayHeader, viewDaySlot, viewDaySlotGroup, viewHourSlot, viewTimeGutter, viewTimeGutterHeader, viewTimeSlot, viewTimeSlotGroup)
 
+import Calendar.Event as Event exposing (rangeDescription)
+import Calendar.Msg exposing (Msg(..))
+import Config exposing (ViewConfig)
+import Date exposing (Date)
+import Date.Extra
+import Helpers
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Date exposing (Date)
-import Date.Extra
-import Config exposing (ViewConfig)
 import Json.Decode as Json
-import Helpers
-import Calendar.Msg exposing (Msg(..))
 import Mouse
-import Calendar.Event as Event exposing (rangeDescription)
 
 
 view : ViewConfig event -> List event -> Maybe String -> Date -> Html Msg
@@ -30,8 +30,8 @@ viewDate day =
         title day =
             Date.Extra.toFormattedString "EE M/d" day
     in
-        div [ class "elm-calendar--date-header" ]
-            [ a [ class "elm-calendar--date", href "#" ] [ text <| title day ] ]
+    div [ class "elm-calendar--date-header" ]
+        [ a [ class "elm-calendar--date", href "#" ] [ text <| title day ] ]
 
 
 viewDayHeader : Date -> Html Msg
@@ -72,7 +72,7 @@ viewDaySlot : ViewConfig event -> List event -> Maybe String -> Date -> Html Msg
 viewDaySlot config events selectedId day =
     Helpers.hours day
         |> List.map viewDaySlotGroup
-        |> (flip (++)) (viewDayEvents config events selectedId day)
+        |> (\b a -> (++) a b) (viewDayEvents config events selectedId day)
         |> div [ class "elm-calendar--day-slot" ]
 
 
@@ -107,7 +107,7 @@ viewDayEvent config day selectedId event =
         eventRange =
             rangeDescription (config.start event) (config.end event) Date.Extra.Day day
     in
-        Event.maybeViewDayEvent config event selectedId eventRange
+    Event.maybeViewDayEvent config event selectedId eventRange
 
 
 viewAllDayCell : List Date -> Html Msg
@@ -120,5 +120,5 @@ viewAllDayCell days =
             div [ class "elm-calendar--all-day" ]
                 []
     in
-        div [ class "elm-calendar--all-day-cell" ]
-            (viewAllDayText :: List.map viewAllDay days)
+    div [ class "elm-calendar--all-day-cell" ]
+        (viewAllDayText :: List.map viewAllDay days)
