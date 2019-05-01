@@ -5,7 +5,8 @@ import Calendar.Msg exposing (Msg)
 import Config exposing (ViewConfig)
 import Date exposing (Date)
 import Date.Extra
-import Date.Extra.Facts
+-- import Date.Extra.Facts
+import Date.Facts
 import Helpers
 import Html exposing (..)
 import Html.Attributes exposing (..)
