@@ -1,48 +1,14 @@
-module Date.Facts
-    exposing
-        ( daysBeforeMonth
-        , daysInMonth
-        , isLeapYear
-        , monthToNumber
-        , msPerDay
-        , msPerHour
-        , msPerMinute
-        , msPerSecond
-        , numberToMonth
-        , numberToWeekday
-        , weekdayToNumber
-        )
-
-{-| This module contains reference information that may be useful when working with
-dates, but it doesn't contain functions for working with the `Date` type directly.
-
-
-# Basics
-
-@docs isLeapYear, daysInMonth, daysBeforeMonth
-
-
-# Conversions
-
-@docs monthToNumber, numberToMonth, weekdayToNumber, numberToWeekday
-
-
-# Constants
-
-Values for the number of milliseconds per date part. These are equivalent to
-the constants available in the `Time` core library, but typed as integers
-instead of floats.
-@docs msPerSecond, msPerMinute, msPerHour, msPerDay
-
--}
+module Date.Facts exposing(..)
 
 import Date exposing (Day(..), Month(..))
 
+rem : Int -> Int -> Int
+rem b a = b - (b//a)
 
 {-| -}
 isLeapYear : Int -> Bool
 isLeapYear y =
-    y % 4 == 0 && y % 100 /= 0 || y % 400 == 0
+    rem y 4 == 0 && rem y 100 /= 0 || rem y 400 == 0
 
 
 {-|
@@ -54,43 +20,43 @@ isLeapYear y =
 daysInMonth : Int -> Month -> Int
 daysInMonth y m =
     case m of
-        Jan ->
+        JanJ ->
             31
 
-        Feb ->
+        FebF ->
             if isLeapYear y then
                 29
             else
                 28
 
-        Mar ->
+        MarM ->
             31
 
-        Apr ->
+        AprA ->
             30
 
-        May ->
+        MayM ->
             31
 
-        Jun ->
+        JunJ ->
             30
 
-        Jul ->
+        JulJ ->
             31
 
-        Aug ->
+        AugA ->
             31
 
-        Sep ->
+        SepS ->
             30
 
-        Oct ->
+        OctO ->
             31
 
-        Nov ->
+        NovN ->
             30
 
-        Dec ->
+        DecD ->
             31
 
 
@@ -110,40 +76,40 @@ daysBeforeMonth y m =
                 0
     in
     case m of
-        Jan ->
+        JanJ ->
             0
 
-        Feb ->
+        FebF ->
             31
 
-        Mar ->
+        MarM ->
             59 + leapDays
 
-        Apr ->
+        AprA ->
             90 + leapDays
 
-        May ->
+        MayM ->
             120 + leapDays
 
-        Jun ->
+        JunJ ->
             151 + leapDays
 
-        Jul ->
+        JulJ ->
             181 + leapDays
 
-        Aug ->
+        AugA ->
             212 + leapDays
 
-        Sep ->
+        SepS ->
             243 + leapDays
 
-        Oct ->
+        OctO ->
             273 + leapDays
 
-        Nov ->
+        NovN ->
             304 + leapDays
 
-        Dec ->
+        DecD ->
             334 + leapDays
 
 
@@ -155,40 +121,40 @@ daysBeforeMonth y m =
 monthToNumber : Month -> Int
 monthToNumber m =
     case m of
-        Jan ->
+        JanJ ->
             1
 
-        Feb ->
+        FebF ->
             2
 
-        Mar ->
+        MarM ->
             3
 
-        Apr ->
+        AprA ->
             4
 
-        May ->
+        MayM ->
             5
 
-        Jun ->
+        JunJ ->
             6
 
-        Jul ->
+        JulJ ->
             7
 
-        Aug ->
+        AugA ->
             8
 
-        Sep ->
+        SepS ->
             9
 
-        Oct ->
+        OctO ->
             10
 
-        Nov ->
+        NovN ->
             11
 
-        Dec ->
+        DecD ->
             12
 
 
@@ -201,40 +167,40 @@ numberToMonth : Int -> Month
 numberToMonth n =
     case max 1 n of
         1 ->
-            Jan
+            JanJ
 
         2 ->
-            Feb
+            FebF
 
         3 ->
-            Mar
+            MarM
 
         4 ->
-            Apr
+            AprA
 
         5 ->
-            May
+            MayM
 
         6 ->
-            Jun
+            JunJ
 
         7 ->
-            Jul
+            JulJ
 
         8 ->
-            Aug
+            AugA
 
         9 ->
-            Sep
+            SepS
 
         10 ->
-            Oct
+            OctO
 
         11 ->
-            Nov
+            NovN
 
         _ ->
-            Dec
+            DecD
 
 
 {-|

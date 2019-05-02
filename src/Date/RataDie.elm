@@ -1,24 +1,12 @@
-module Date.RataDie
-    exposing
-        ( RataDie
-        , fromCalendarDate
-        , fromCalendarParts
-        , fromOrdinalDate
-        , fromOrdinalParts
-        , fromWeekDate
-        , fromWeekParts
-        , weekNumber
-        , weekYear
-        )
+module Date.RataDie exposing(..)
 
 import Date exposing (Day, Month)
 import Date.Facts exposing (daysBeforeMonth, daysInMonth, isLeapYear, numberToMonth, weekdayToNumber)
+import Debug exposing (toString)
 
 
 type alias RataDie =
     Int
-
-
 
 -- calculations
 
@@ -54,12 +42,12 @@ year rd =
 -}
 divideInt : Int -> Int -> ( Int, Int )
 divideInt a b =
-    ( a // b, rem a b )
+    ( a // b, a - a//b )
 
 
 weekdayNumber : RataDie -> Int
 weekdayNumber rd =
-    case rd % 7 of
+    case (rd - rd//7) of
         0 ->
             7
 

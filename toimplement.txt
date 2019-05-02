@@ -1,0 +1,56 @@
+
+
+src/Helpers.elm:    if Date.Extra.fractionalDay date == 0 then
+src/Helpers.elm:        Date.Extra.add Date.Extra.Millisecond 1 date
+src/Helpers.elm:            Date.Extra.floor Date.Extra.Day day
+src/Helpers.elm:            Date.Extra.ceiling Date.Extra.Day day
+src/Helpers.elm:    Date.Extra.range Date.Extra.Hour 1 midnight lastHour
+src/Helpers.elm:            Date.Extra.fromCalendarDate year month 1
+src/Helpers.elm:            Date.Extra.add Date.Extra.Month 1 firstOfMonth
+src/Helpers.elm:    Date.Extra.range Date.Extra.Day
+src/Helpers.elm:        (Date.Extra.floor Date.Extra.Sunday firstOfMonth)
+src/Helpers.elm:        (Date.Extra.ceiling Date.Extra.Sunday firstOfNextMonth)
+src/Helpers.elm:    Date.Extra.range Date.Extra.Day
+src/Helpers.elm:        (Date.Extra.floor Date.Extra.Sunday date)
+src/Helpers.elm:        (Date.Extra.ceiling Date.Extra.Sunday date)
+
+src/Calendar/Event.elm:rangeDescription : Date -> Date -> Date.Extra.Interval -> Date -> EventRange
+src/Calendar/Event.elm:            Date.Extra.floor interval day
+src/Calendar/Event.elm:            Date.Extra.ceiling interval day
+src/Calendar/Event.elm:                |> Date.Extra.add Date.Extra.Millisecond -1
+src/Calendar/Event.elm:            Date.Extra.isBetween begInterval endInterval start
+src/Calendar/Event.elm:            Date.Extra.isBetween begInterval endInterval end
+src/Calendar/Event.elm:            Date.Extra.diff Date.Extra.Millisecond begInterval start
+src/Calendar/Event.elm:            Date.Extra.diff Date.Extra.Millisecond end endInterval
+src/Calendar/Event.elm:                    Date.Extra.diff Date.Extra.Day eventStart eventEnd + 1
+src/Calendar/Event.elm:                    7 - Date.Extra.weekdayNumber eventStart + 1
+src/Calendar/Event.elm:                    7 - Date.Extra.weekdayNumber eventEnd + 1
+src/Calendar/Event.elm:            100 * Date.Extra.fractionalDay start
+src/Calendar/Event.elm:            100 * Date.Extra.fractionalDay end
+src/Calendar/Event.elm:    modBy 7 (Date.Extra.weekdayNumber date)
+src/Calendar/Agenda.elm:import Date.Extra
+src/Calendar/Agenda.elm:                    |> Date.Extra.floor Date.Extra.Day
+src/Calendar/Agenda.elm:                        |> Date.Extra.isBetween eventGroup.date (Date.Extra.add Date.Extra.Day 1 eventGroup.date)
+src/Calendar/Agenda.elm:                |> Date.Extra.isBetween (Date.Extra.floor Date.Extra.Month date) (Date.Extra.ceiling Date.Extra.Month date)
+
+src/Calendar/Month.elm:import Date.Extra
+src/Calendar/Month.elm:-- import Date.Extra.Facts
+src/Calendar/Month.elm:            viewDay <| Date.Extra.Facts.dayOfWeekFromWeekdayNumber int
+src/Calendar/Month.elm:            rangeDescription (config.start event) (config.end event) Date.Extra.Sunday sunday
+src/Calendar/Day.elm:import Date.Extra
+
+src/Calendar/Day.elm:            rangeDescription (config.start event) (config.end event) Date.Extra.Day day
+src/Calendar/Internal.elm:import Date.Extra
+src/Calendar/Internal.elm:    Date.Extra.add Date.Extra.Millisecond timeDiff date
+src/Calendar/Internal.elm:            { state | viewing = Date.Extra.add Date.Extra.Week step viewing }
+src/Calendar/Internal.elm:            { state | viewing = Date.Extra.add Date.Extra.Day step viewing }
+src/Calendar/Internal.elm:            { state | viewing = Date.Extra.add Date.Extra.Month step viewing }
+
+tests/Tests.elm:import Date.Extra as Date exposing (..)
+tests/Fixtures.elm:import Date.Extra as Date exposing (..)
+Binary file elm-stuff/0.19.0/Date-Extra.elmo matches
+Binary file .git/index matches
+examples/src/Selectable.elm:import Date.Extra
+examples/src/Selectable.elm:            Event (newEventId model.curEventId) "" date (Date.Extra.add Date.Extra.Minute minutes date)
+examples/src/Selectable.elm:            Date.Extra.diff Date.Extra.Minute event.start event.end
+examples/src/Fixtures.elm:import Date.Extra as Date exposing (..)
